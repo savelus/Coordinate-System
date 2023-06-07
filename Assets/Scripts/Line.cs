@@ -11,8 +11,9 @@ public class Line
                 Mathf.Abs(StartPosition.y - EndPosition.y) / Mathf.Abs(StartPosition.x - EndPosition.x);
 
         private Material _material;
-        public Line(string name, Material material, float width)
+        public Line(string name, Material material, float width, Transform parent)
         {
+                
                 LineRenderer = new GameObject(name).AddComponent<LineRenderer>();
                 _material = material;
                 LineRenderer.positionCount = 2;
@@ -20,5 +21,6 @@ public class Line
                 LineRenderer.endWidth = width;
                 LineRenderer.useWorldSpace = true;
                 LineRenderer.numCapVertices = 50;
+                LineRenderer.transform.SetParent(parent);
         }
 }

@@ -21,39 +21,32 @@ public class InputSystem : MonoBehaviour
         {
             switch (_gameManager.CurrentState)
             {
-                case GameState.DrawingAbscissa:
-                    _currentLine = _coordinateSystem.Abscissa;
-                    if (_currentLine == null)
-                    {
-                        _currentLine = new Line("Abscissa", _coordinateSystem.LineMaterial,
-                            _coordinateSystem.LineWidth);
-                    }
+                case GameState.DrawingStartPoint:
                     _mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                     _mousePosition.z = 0;
-                    _currentLine.LineRenderer.SetPosition(0, _mousePosition);
-                    _currentLine.LineRenderer.SetPosition(1, _mousePosition);
+                    _coordinateSystem.DrawOriginCoordinatesPoint(_mousePosition);
+                    _gameManager.CurrentState += 1;
+                    break;
+                case GameState.DrawingAbscissa:
+                    _currentLine = _coordinateSystem.Abscissa ?? new Line("Abscissa", _coordinateSystem.LineMaterial,
+                        _coordinateSystem.LineWidth, _coordinateSystem.transform);
+                    _coordinateSystem.FirstDrawLine(_currentLine);
                     break;
                 case GameState.DrawingOrdinate:
-                    _currentLine = _coordinateSystem.Ordinate;
-                    if (_currentLine == null)
-                    {
-                        _currentLine = new Line("Abscissa", _coordinateSystem.LineMaterial,
-                            _coordinateSystem.LineWidth);
-                    }
-                    _mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                    _mousePosition.z = 0;
-                    _currentLine.LineRenderer.SetPosition(0, _mousePosition);
-                    _currentLine.LineRenderer.SetPosition(1, _mousePosition);
+                    _currentLine = _coordinateSystem.Ordinate ?? new Line("Ordinate", _coordinateSystem.LineMaterial,
+                        _coordinateSystem.LineWidth, _coordinateSystem.transform);
+                    _coordinateSystem.FirstDrawLine(_currentLine);
                     break;
                 
             }
-        } else if(Input.GetMouseButtonUp(0) && _currentLine.LineRenderer)
+        } else if(Input.GetMouseButtonUp(0) && _currentLine != null )
         {
             _mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             _mousePosition.z = 0;
             _currentLine.LineRenderer.SetPosition(1, _mousePosition);
             _currentLine = null;
-        } else if(Input.GetMouseButton(0) && _currentLine.LineRenderer)
+            _gameManager.CurrentState += 1;
+        } else if(Input.GetMouseButton(0) && _currentLine != null )
         {
             _mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             _mousePosition.z = 0;
